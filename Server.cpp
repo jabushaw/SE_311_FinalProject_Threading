@@ -2,23 +2,23 @@
 #include <vector>
 
 
-//RJ removed string, string constuctor
 Server::~Server()
 {
 		DeleteCriticalSection(done_cs);
 		DeleteCriticalSection(reqs_cs); 
-		threadPool.clear(); //RJ clear the thread pool
-		activeThreads.clear(); //RJ clear the thread pool
+		threadPool.clear(); 
+		activeThreads.clear(); 
 		//may need to kill threads off first -
 }
 
-void Server::doRequest(Request_HTTP&)//RJ Changed to class call
+void Server::doRequest(Request_HTTP&)
 {
-	parse(Request_HTTP&); //RJ change to Request_HTTP&
-	reqsLog(message, Request_HTTP&);//RJ change parameters
+	parse(Request_HTTP&);
+	string message = "\nThread ID: " << ID << "\nURL: " << URL << "\nIP: " << IP << " \n"; //NJ added 11/16
+	reqsLog(message, Request_HTTP&);
 }
 
-bool Server::Parse(Request_HTTP&) // RJ change to Request_HTTP&
+bool Server::Parse(Request_HTTP&) 
 {
 	requests++; 
 	//send request and get no response - die here
@@ -56,7 +56,7 @@ bool Server::Parse(Request_HTTP&) // RJ change to Request_HTTP&
 	
 }
 
-void Server::done(Request_HTTP&)//RJ changed to class call
+void Server::done(Request_HTTP&)
 {
 	EnterCriticalSection(done_cs);
 	cout << "Thread " << ID << "has finished. \n"; 
@@ -64,12 +64,16 @@ void Server::done(Request_HTTP&)//RJ changed to class call
 	--activeThreads; 
 }
 
-void Server::reqsLog(string thread, string IP)
+void Server::reqsLog(message, Request_HTTP&)
 {
 	EnterCriticalSection(reqs_cs);
 	LeaveCriticalSection(reqs_cs);
 	log(thread, IP); 
 	
-	//log.open and write the message
-	//apppend the id url and ip to the log file
+	//NJ added 11/16
+	ofstream logFile; 
+	logFile.open("ThreadLog.txt"); 
+	logFile << message ; 
+	logFile.close(); 
 }
+
