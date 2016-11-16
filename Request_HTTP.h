@@ -1,25 +1,23 @@
-#pragma once // don't need
 #include <string>
-#include <thread> // don't need
-#include "Server.h" //don't need
 using namespace std;
 class Request_HTTP
 {
 private:
 	string URL;
 	string IP;
-	int threadID; /// change the name to something else JR and set it too something negative -- change name to index
+	int ID; //RJ changed from threadID to ID
 	//threadID is subscript in vecotr of subclass and negative suggests it's not a valid value
-
+	Request_HTTP();
 public:
-	Request_HTTP();//move the default to private
 	Request_HTTP(string, string);
 	~Request_HTTP();
-		//get string URL
-	// get String IP
-	//get ThreadID
-	//set thread ID
-	//complete these 4 ^^ in the header
+	string getURL(){return URL;};
+	string getIP(){return IP;};
+	string getID(){return ID;};
+	string setID()
+	{
+		//set the thread id here - call the thread creation  
+	};
 };
 
 //the only one who can set the id should be the listener class

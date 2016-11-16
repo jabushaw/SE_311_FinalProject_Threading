@@ -12,9 +12,7 @@ Request_HTTP::Request_HTTP(string newIP, string newURL)
 {
 	IP = newIP;
 	URL = newURL;
-	Server stuff; //kill these 2 lines
-	stuff(IP, URL);// kill these 2 lines
-	//set threadID to negative by default
+	ID = -2; //RJ added negative standard
 }
 
 

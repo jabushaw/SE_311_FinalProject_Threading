@@ -2,90 +2,78 @@
 #include <vector>
 
 
-
-Server::Server(string IP,string URL)
-{
-	IPAddress = IP;//remove
-	URLAddress = URL;//remove
-
-}//remove
-
-
 Server::~Server()
 {
-	#ifdef SYNCHRONIZATION//remove
 		DeleteCriticalSection(done_cs);
-		DeleteCriticalSection(reqs_cs
-		//should also go through thread pool and delete everyone
+		DeleteCriticalSection(reqs_cs); 
+		threadPool.clear(); 
+		activeThreads.clear(); 
 		//may need to kill threads off first -
-	#endif//remove
 }
 
-void Server::doRequest(IP, URL, threadID)
+void Server::doRequest(Request_HTTP&)
 {
-	parse(IP, URL, threadID); //parameter change
-	reqsLog(threadID, IP);//parameter change
+	parse(Request_HTTP&);
+	string message = "\nThread ID: " << ID << "\nURL: " << URL << "\nIP: " << IP << " \n"; //NJ added 11/16
+	reqsLog(message, Request_HTTP&);
 }
 
-bool Server::Parse(IP, URL, threadID) // parses signature changes
+bool Server::Parse(Request_HTTP&) 
 {
-	//increment requests
+	requests++; 
 	//send request and get no response - die here
 	if (IP == NULL || URL == NULL)
 	{
-		//increment error
+		errors++; 
 		return false;
 	}
 	//make sure IP is not of incorrect length
 	if (IP.length() > 15)
 	{
-		//increment errors
+		errors++; 
 		return false;
 	}
 	else
 	{
+		int x = URL.length(); 
+		for(int i = x; i >=0; i--)
+		{
+			if(URL[i] == "\") 
+			{
+				
+			}//ASK CURT ABOUT LONG URL'S
+		}
+			
 		//here is where we start at the URL and go backwards till you find the first single slash - 
 		//empty string from the first slash and forward
 		//http:/www.vcsu.edu/ ALL THIS GOES
 		//empty string ->index.htm
 		//requests, erorrs and activeThreads
-		//declare how many threads are currently active
-		//increment activeThreads
+		activeThreads++; 
+		cout << "Active Threads: " << activeThreads << "\n"; 
 		return true;
 	}
 	
 }
 
-void Server::done(string thread)//no string - needs request HTTP or ID
+void Server::done(Request_HTTP&)
 {
-	#ifdef SYNCHRONIZATION//remove
-		EnterCriticalSection(done_cs);
-	#endif//remove
-		errors++;//remove
-		//announce that thread such and such finished
-	#ifdef SYNCHRONIZATION//remove
-		LeaveCriticalSection(done_cs);
-	#endif//remove
-	
-	//decrement activeThreads
+	EnterCriticalSection(done_cs);
+	cout << "Thread " << ID << "has finished. \n"; 
+	LeaveCriticalSection(done_cs);
+	--activeThreads; 
 }
 
-void Server::reqsLog(string thread, string IP)
+void Server::reqsLog(message, Request_HTTP&)
 {
-	#ifdef SYNCHRONIZATION//remove
-		EnterCriticalSection(reqs_cs);
-	#endif//remove
-		errors++;//remove
-	#ifdef SYNCHRONIZATION//remove
-		LeaveCriticalSection(reqs_cs);
-	#endif//remove
+	EnterCriticalSection(reqs_cs);
+	LeaveCriticalSection(reqs_cs);
 	log(thread, IP); 
 	
-	//log.open and write the message
-	//apppend the id url and ip to the log file
+	//NJ added 11/16
+	ofstream logFile; 
+	logFile.open("ThreadLog.txt"); 
+	logFile << message ; 
+	logFile.close(); 
 }
 
-void Server::threadPool() //REMOVE ENTIRE METHOD
-{
-	///we gonna create threads here
-}
