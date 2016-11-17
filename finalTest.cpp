@@ -51,6 +51,8 @@ void ThreadTest::cricitcalSectionTest(){
 
 
 //NJ Added IP, URL, and Thread tests to ensure none were empty (or that they were....)
+//create HTTP request and call parse and receive false
+//cppunit....(Server.doRequest()
 void ThreadTest::emptyIP(
 	CPPUNIT_ASSERT(IP == "" || IP == NULL);
 }

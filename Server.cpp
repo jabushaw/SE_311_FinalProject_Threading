@@ -1,6 +1,13 @@
 #include "Server.h"
 #include <vector>
 
+//need to build a constuctor again.....
+//set activeThreads, requests and errors to 0 here
+//initialize activethread vector to size 16
+//go through loop and intialize it to 0-15
+//constructor should call critical sections and THEN reqslog
+
+
 
 Server::~Server()
 {
@@ -14,8 +21,12 @@ Server::~Server()
 void Server::doRequest(Request_HTTP&)
 {
 	parse(Request_HTTP&);
-	string message = "\nThread ID: " << ID << "\nURL: " << URL << "\nIP: " << IP << " \n"; //NJ added 11/16
+	//if parse call request log and call startThread and return true
+	//if(parse(Request_HTTP&)) {start thread return true}
+	
+	string message = "Thread ID: " << ID  << "URL: " << URL << "IP: " << IP << " \n"; //NJ added 11/16
 	reqsLog(message, Request_HTTP&);
+	//return false
 }
 
 bool Server::Parse(Request_HTTP&) 
@@ -33,15 +44,19 @@ bool Server::Parse(Request_HTTP&)
 		errors++; 
 		return false;
 	}
-	else
+	else //remove else 
 	{
 		int x = URL.length(); 
-		for(int i = x; i >=0; i--)
+		for(int i = x-1; i >=0; i--)
 		{
-			if(URL[i] == "\") 
+			if(URL[i] == "/" ) 
 			{
 				
 			}//ASK CURT ABOUT LONG URL'S
+			
+			//sample URL http://goober.vcsu.edu/
+			//start loop at character 8 and find the first forward slash
+			//substring from forward slash (x,500); 
 		}
 			
 		//here is where we start at the URL and go backwards till you find the first single slash - 
@@ -49,6 +64,7 @@ bool Server::Parse(Request_HTTP&)
 		//http:/www.vcsu.edu/ ALL THIS GOES
 		//empty string ->index.htm
 		//requests, erorrs and activeThreads
+		//call startThread and move last two lines to startThread method
 		activeThreads++; 
 		cout << "Active Threads: " << activeThreads << "\n"; 
 		return true;
@@ -59,21 +75,47 @@ bool Server::Parse(Request_HTTP&)
 void Server::done(Request_HTTP&)
 {
 	EnterCriticalSection(done_cs);
-	cout << "Thread " << ID << "has finished. \n"; 
-	LeaveCriticalSection(done_cs);
+	cout << "Thread " << ID << "has finished. \n"; //Does visual studio use concatenation instead of puto? 
+	// we need to cast ID as a string. 
 	--activeThreads; 
+	LeaveCriticalSection(done_cs);
 }
 
 void Server::reqsLog(message, Request_HTTP&)
 {
 	EnterCriticalSection(reqs_cs);
-	LeaveCriticalSection(reqs_cs);
-	log(thread, IP); 
+	LeaveCriticalSection(reqs_cs);//move to the bottom of this method
+	log(thread, IP); //Delete this....
 	
 	//NJ added 11/16
-	ofstream logFile; 
+	ofstream logFile; //have to open for append
+	//figure out how to add a date and time stamp before the message and then like 6 blank spaces
 	logFile.open("ThreadLog.txt"); 
 	logFile << message ; 
 	logFile.close(); 
 }
+
+void Server::reqsLog(message)
+{
+	// This is where the constructor should call when its originally opening up
+	//should append date and time and then the message here
+	EnterCriticalSection(reqs_cs);
+	LeaveCriticalSection(reqs_cs);//move to the bottom of this method
+	log(thread, IP); //Delete this....
+	
+	//NJ added 11/16
+	ofstream logFile; //have to open for append
+	//figure out how to add a date and time stamp
+	logFile.open("ThreadLog.txt"); 
+	logFile << message ; 
+	logFile.close(); 
+}
+
+//action thread
+//search threadPool for idle thread
+//look through vector
+//call method in ActionThread that say's "You busy?" first one he finds that isn't then it gets sent 
+//if all threads are busy then who cares? - abort it
+//call an intialization routine - not intializing the threads but call ActionThread.getStatus or doStatus
+//Resume
 

@@ -14,10 +14,11 @@ public:
 	string getURL(){return URL;};
 	string getIP(){return IP;};
 	string getID(){return ID;};
-	string setID()
+	void setID(int threadNumber)
 	{
-		//set the thread id here - call the thread creation  
+		ID = threadNumber; 
 	};
+	//may need a set URL
 };
 
 //the only one who can set the id should be the listener class
