@@ -1,0 +1,6 @@
+#include "ActionThread"
+
+ActiveThread::ActiveThread()
+{
+	
+}
